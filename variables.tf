@@ -111,10 +111,20 @@ variable "security_group_private_rules_count" {
 }
 
 variable "default_target_group_healthcheck_path" {
+  description = <<EOF
+  The destination for the health check request
+  of the detault target group
+  EOF
+
   default = "/"
 }
 
 variable "default_target_group_healthcheck_response_codes" {
+  description = <<EOF
+  The HTTP codes to use when checking for a successful response
+  from a target of the detault target group
+  EOF
+
   default = "200"
 }
 
