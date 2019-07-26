@@ -27,3 +27,8 @@ output "tls_listener_arns" {
   value       = "${aws_lb_listener.tls.*.arn}"
   description = "The ARN of the TLS listeners of the Load Balancer"
 }
+
+output "default_target_group_arn" {
+  value       = "${aws_lb_target_group.default.arn}"
+  description = "The ARN of the default target group created"
+}
