@@ -26,6 +26,8 @@ This module creates:
 | subnet\_ids | The subnets where the load balancer will be placed | list | n/a | yes |
 | tls\_listeners | A list of map of HTTPS listener definitions. The map must contain 'port' and 'certificate_arn'. | list | `<list>` | no |
 | tls\_listeners\_count | The number of HTTPS listeners | string | `"0"` | no |
+| default\_target\_group\_healthcheck\_path | The destination for the health check request of the detault target group | string | `"/"` | no |
+| default\_target\_group\_healthcheck\_response\_codes | The HTTP codes to use when checking for a successful response from a target of the detault target group | string | `"200"` | no |
 
 ## Outputs
 

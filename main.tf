@@ -31,6 +31,13 @@ resource "aws_lb_target_group" "default" {
   port     = "${lookup(var.listeners[count.index], "port")}"
   protocol = "${lookup(var.listeners[count.index], "protocol")}"
   vpc_id   = "${data.aws_subnet.selected.vpc_id}"
+
+  health_check {
+    path                = "${var.default_target_group_healthcheck_path}"
+    matcher             = "${var.default_target_group_healthcheck_response_codes}"
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+  }
 }
 
 # -----------------------------------------------------------------------
