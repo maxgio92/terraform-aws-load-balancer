@@ -37,4 +37,5 @@ This module creates:
 | security\_group\_id | The ID of the security group of the Load Balancer |
 | tls\_listener\_arns | The ARN of the TLS listeners of the Load Balancer |
 | zone\_id | The canonical hosted zone ID of the Load Balancer |
+| default\_target\_group\_arn | The ARN of the default target group created |
 
