@@ -110,6 +110,14 @@ variable "security_group_private_rules_count" {
   description = "The number of SG private rules"
 }
 
+variable "default_target_group_healthcheck_path" {
+  default = "/"
+}
+
+variable "default_target_group_healthcheck_response_codes" {
+  default = "200"
+}
+
 variable "prefix_name" {
   description = "The prefix for the name of the resources"
   default     = "my"
