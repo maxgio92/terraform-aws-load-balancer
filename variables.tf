@@ -60,6 +60,8 @@ variable "tls_listeners" {
 #  }
 #]
 variable "security_group_public_rules" {
+  type = list(map(string))
+
   default = []
 
   description = <<EOF
@@ -78,6 +80,8 @@ variable "security_group_public_rules" {
 #  }
 #]
 variable "security_group_private_rules" {
+  type = list(map(string))
+
   default = []
 
   description = <<EOF
