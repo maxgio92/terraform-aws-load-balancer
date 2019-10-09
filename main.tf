@@ -48,7 +48,7 @@ resource "aws_lb_target_group" "default" {
 # -----------------------------------------------------------------------
 
 resource "aws_lb_listener" "plain" {
-  count = var.listeners_count
+  count = length(var.listeners)
 
   load_balancer_arn = aws_lb.main.arn
   port              = var.listeners[count.index]["port"]
@@ -61,7 +61,7 @@ resource "aws_lb_listener" "plain" {
 }
 
 resource "aws_lb_listener" "tls" {
-  count = var.tls_listeners_count
+  count = length(var.tls_listeners)
 
   load_balancer_arn = aws_lb.main.arn
   port              = var.tls_listeners[count.index]["port"]
@@ -101,7 +101,7 @@ resource "aws_security_group" "load_balancers" {
 }
 
 resource "aws_security_group_rule" "public" {
-  count = var.security_group_public_rules_count
+  count = length(var.security_group_public_rules)
 
   type      = "ingress"
   from_port = var.security_group_public_rules[count.index]["port"]
@@ -114,7 +114,7 @@ resource "aws_security_group_rule" "public" {
 }
 
 resource "aws_security_group_rule" "private" {
-  count = var.security_group_private_rules_count
+  count = length(var.security_group_private_rules)
 
   type      = "ingress"
   from_port = var.security_group_private_rules[count.index]["port"]

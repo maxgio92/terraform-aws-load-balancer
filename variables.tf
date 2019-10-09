@@ -10,11 +10,6 @@ variable "internal" {
 
 # Listeners
 
-variable "listeners_count" {
-  default     = 0
-  description = "The number of plain listeners"
-}
-
 # data structure:
 # [
 #   {
@@ -27,10 +22,8 @@ variable "listeners" {
 
   description = <<EOF
   A list of map of plain listener definitions. The map must contain 'port' and 'protocol'.
-  For HTTPS listeners, use instead 'tls_listeners' and 'tls_listeners_count'.
-  
-EOF
-
+  For HTTPS listeners, use instead 'tls_listeners'.
+  EOF
 
   default = [
     {
@@ -38,11 +31,6 @@ EOF
       protocol = "HTTP"
     },
   ]
-}
-
-variable "tls_listeners_count" {
-  default     = 0
-  description = "The number of HTTPS listeners"
 }
 
 # data structure:
@@ -57,9 +45,7 @@ variable "tls_listeners" {
 
   description = <<EOF
   A list of map of HTTPS listener definitions. The map must contain 'port' and 'certificate_arn'.
-  
-EOF
-
+  EOF
 
   default = []
 }
@@ -80,16 +66,8 @@ variable "security_group_public_rules" {
   A list of maps containing security group public rules.
   Each map must contain 'port' and 'source', where the source must be a
   CIDR block alowed to communicate with the LB.
-  
-EOF
+  EOF
 
-}
-
-# Workaround to:
-# https://github.com/hashicorp/terraform/issues/17421
-variable "security_group_public_rules_count" {
-  default     = 0
-  description = "The number of SG public rules"
 }
 
 # structure:
@@ -106,24 +84,15 @@ variable "security_group_private_rules" {
   A list of maps containing security group private rules.
   Each map must contain 'port' and 'source', where the source must be a
   security group ID allowed to communicate with the LB.
-  
-EOF
+  EOF
 
-}
-
-# Workaround to:
-# https://github.com/hashicorp/terraform/issues/17421
-variable "security_group_private_rules_count" {
-  default     = 0
-  description = "The number of SG private rules"
 }
 
 variable "default_target_group_healthcheck_path" {
   description = <<EOF
   The destination for the health check request
   of the detault target group
-  
-EOF
+  EOF
 
 
   default = "/"
@@ -133,8 +102,7 @@ variable "default_target_group_healthcheck_response_codes" {
   description = <<EOF
   The HTTP codes to use when checking for a successful response
   from a target of the detault target group
-  
-EOF
+  EOF
 
 
   default = "200"
