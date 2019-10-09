@@ -4,23 +4,26 @@
 
 resource "aws_lb" "main" {
   name               = "${var.prefix_name}-lb"
-  internal           = "${var.internal}"
+  internal           = var.internal
   load_balancer_type = "application"
 
   # Workaround for this issue:
   # https://github.com/hashicorp/terraform/issues/13869
   # expected a list, wrap these lists into another lists
 
-  security_groups = ["${aws_security_group.load_balancers.id}"]
-  subnets         = ["${var.subnet_ids}"]
+  security_groups = [aws_security_group.load_balancers.id]
+  subnets         = var.subnet_ids
   enable_http2    = false
-  tags = "${merge(var.default_tags, map(
-    "Name", "${var.prefix_name}-lb"
-  ))}"
+  tags = merge(
+    var.default_tags,
+    {
+      "Name" = "${var.prefix_name}-lb"
+    },
+  )
 }
 
 data "aws_subnet" "selected" {
-  id = "${var.subnet_ids[1]}"
+  id = var.subnet_ids[1]
 }
 
 # -----------------------------------------------------------------------
@@ -28,13 +31,13 @@ data "aws_subnet" "selected" {
 # -----------------------------------------------------------------------
 
 resource "aws_lb_target_group" "default" {
-  port     = "${lookup(var.listeners[count.index], "port")}"
-  protocol = "${lookup(var.listeners[count.index], "protocol")}"
-  vpc_id   = "${data.aws_subnet.selected.vpc_id}"
+  port     = var.listeners[count.index]["port"]
+  protocol = var.listeners[count.index]["protocol"]
+  vpc_id   = data.aws_subnet.selected.vpc_id
 
   health_check {
-    path                = "${var.default_target_group_healthcheck_path}"
-    matcher             = "${var.default_target_group_healthcheck_response_codes}"
+    path                = var.default_target_group_healthcheck_path
+    matcher             = var.default_target_group_healthcheck_response_codes
     healthy_threshold   = 5
     unhealthy_threshold = 2
   }
@@ -45,30 +48,30 @@ resource "aws_lb_target_group" "default" {
 # -----------------------------------------------------------------------
 
 resource "aws_lb_listener" "plain" {
-  count = "${var.listeners_count}"
+  count = var.listeners_count
 
-  load_balancer_arn = "${aws_lb.main.arn}"
-  port              = "${lookup(var.listeners[count.index], "port")}"
-  protocol          = "${lookup(var.listeners[count.index], "protocol")}"
+  load_balancer_arn = aws_lb.main.arn
+  port              = var.listeners[count.index]["port"]
+  protocol          = var.listeners[count.index]["protocol"]
 
   default_action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.default.arn}"
+    target_group_arn = aws_lb_target_group.default.arn
   }
 }
 
 resource "aws_lb_listener" "tls" {
-  count = "${var.tls_listeners_count}"
+  count = var.tls_listeners_count
 
-  load_balancer_arn = "${aws_lb.main.arn}"
-  port              = "${lookup(var.tls_listeners[count.index], "port")}"
+  load_balancer_arn = aws_lb.main.arn
+  port              = var.tls_listeners[count.index]["port"]
   protocol          = "HTTPS"
 
-  certificate_arn = "${lookup(var.tls_listeners[count.index], "certificate_arn")}"
+  certificate_arn = var.tls_listeners[count.index]["certificate_arn"]
 
   default_action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.default.arn}"
+    target_group_arn = aws_lb_target_group.default.arn
   }
 }
 
@@ -80,7 +83,7 @@ resource "aws_security_group" "load_balancers" {
   name        = "${var.prefix_name}-load-balancers"
   description = "Load balancers"
 
-  vpc_id = "${data.aws_subnet.selected.vpc_id}"
+  vpc_id = data.aws_subnet.selected.vpc_id
 
   egress {
     from_port   = 0
@@ -89,33 +92,45 @@ resource "aws_security_group" "load_balancers" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = "${merge(var.default_tags, map(
-    "Name", "${var.prefix_name}-load-balancers"
-  ))}"
+  tags = merge(
+    var.default_tags,
+    {
+      "Name" = "${var.prefix_name}-load-balancers"
+    },
+  )
 }
 
 resource "aws_security_group_rule" "public" {
-  count = "${var.security_group_public_rules_count}"
+  count = var.security_group_public_rules_count
 
   type      = "ingress"
-  from_port = "${lookup(var.security_group_public_rules[count.index], "port")}"
-  to_port   = "${lookup(var.security_group_public_rules[count.index], "port")}"
+  from_port = var.security_group_public_rules[count.index]["port"]
+  to_port   = var.security_group_public_rules[count.index]["port"]
   protocol  = "tcp"
 
-  cidr_blocks = ["${lookup(var.security_group_public_rules[count.index], "source")}"]
+  # TF-UPGRADE-TODO: In Terraform v0.10 and earlier, it was sometimes necessary to
+  # force an interpolation expression to be interpreted as a list by wrapping it
+  # in an extra set of list brackets. That form was supported for compatibility in
+  # v0.11, but is no longer supported in Terraform v0.12.
+  #
+  # If the expression in the following list itself returns a list, remove the
+  # brackets to avoid interpretation as a list of lists. If the expression
+  # returns a single list item then leave it as-is and remove this TODO comment.
+  cidr_blocks = [var.security_group_public_rules[count.index]["source"]]
 
-  security_group_id = "${aws_security_group.load_balancers.id}"
+  security_group_id = aws_security_group.load_balancers.id
 }
 
 resource "aws_security_group_rule" "private" {
-  count = "${var.security_group_private_rules_count}"
+  count = var.security_group_private_rules_count
 
   type      = "ingress"
-  from_port = "${lookup(var.security_group_private_rules[count.index], "port")}"
-  to_port   = "${lookup(var.security_group_private_rules[count.index], "port")}"
+  from_port = var.security_group_private_rules[count.index]["port"]
+  to_port   = var.security_group_private_rules[count.index]["port"]
   protocol  = "tcp"
 
-  source_security_group_id = "${lookup(var.security_group_private_rules[count.index], "source")}"
+  source_security_group_id = var.security_group_private_rules[count.index]["source"]
 
-  security_group_id = "${aws_security_group.load_balancers.id}"
+  security_group_id = aws_security_group.load_balancers.id
 }
+
