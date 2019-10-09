@@ -16,18 +16,15 @@ This module creates:
 |------|-------------|:----:|:-----:|:-----:|
 | default\_tags | The default tags to apply to the resoures | map | `<map>` | no |
 | internal | If true, the load balancer will be internal | string | `"true"` | no |
-| listeners | A list of map of plain listener definitions. The map must contain 'port' and 'protocol'.   For HTTPS listeners, use instead 'tls_listeners' and 'tls_listeners_count'. | list | `<list>` | no |
-| listeners\_count | The number of plain listeners | string | `"0"` | no |
+| listeners | A list of map of plain listener definitions. The map must contain 'port' and 'protocol'.   For HTTPS listeners, use instead 'tls_listeners'. | list(map(string)) | `<list>` | no |
 | prefix\_name | The prefix for the name of the resources | string | `"my"` | no |
-| security\_group\_private\_rules | A list of maps containing security group private rules.   Each map must contain 'port' and 'source', where the source must be a   security group ID allowed to communicate with the LB. | list | `<list>` | no |
-| security\_group\_private\_rules\_count | The number of SG private rules | string | `"0"` | no |
-| security\_group\_public\_rules | A list of maps containing security group public rules.   Each map must contain 'port' and 'source', where the source must be a   CIDR block alowed to communicate with the LB. | list | `<list>` | no |
-| security\_group\_public\_rules\_count | The number of SG public rules | string | `"0"` | no |
-| subnet\_ids | The subnets where the load balancer will be placed | list | n/a | yes |
-| tls\_listeners | A list of map of HTTPS listener definitions. The map must contain 'port' and 'certificate_arn'. | list | `<list>` | no |
-| tls\_listeners\_count | The number of HTTPS listeners | string | `"0"` | no |
+| security\_group\_private\_rules | A list of maps containing security group private rules.   Each map must contain 'port' and 'source', where the source must be a   security group ID allowed to communicate with the LB. | list(map(string)) | `<list>` | no |
+| security\_group\_public\_rules | A list of maps containing security group public rules.   Each map must contain 'port' and 'source', where the source must be a   CIDR block alowed to communicate with the LB. | list(map(string)) | `<list>` | no |
+| subnet\_ids | The subnets where the load balancer will be placed | list(string) | n/a | yes |
+| tls\_listeners | A list of map of HTTPS listener definitions. The map must contain 'port' and 'certificate_arn'. | list(map(string)) | `<list>` | no |
 | default\_target\_group\_healthcheck\_path | The destination for the health check request of the detault target group | string | `"/"` | no |
 | default\_target\_group\_healthcheck\_response\_codes | The HTTP codes to use when checking for a successful response from a target of the detault target group | string | `"200"` | no |
+| default\_tags | The default tags to apply to the resources | map(string) | `{Terraform="true"}` | no |
 
 ## Outputs
 
