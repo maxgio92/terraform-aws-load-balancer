@@ -31,8 +31,8 @@ data "aws_subnet" "selected" {
 # -----------------------------------------------------------------------
 
 resource "aws_lb_target_group" "default" {
-  port     = var.listeners[count.index]["port"]
-  protocol = var.listeners[count.index]["protocol"]
+  port     = var.listeners[0]["port"]
+  protocol = var.listeners[0]["protocol"]
   vpc_id   = data.aws_subnet.selected.vpc_id
 
   health_check {
