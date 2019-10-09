@@ -53,7 +53,7 @@ variable "tls_listeners_count" {
 #   },
 # ]
 variable "tls_listeners" {
-  type = list(string)
+  type = list(map(string))
 
   description = <<EOF
   A list of map of HTTPS listener definitions. The map must contain 'port' and 'certificate_arn'.
