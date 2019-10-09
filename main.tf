@@ -104,7 +104,7 @@ resource "aws_security_group_rule" "public" {
   to_port   = var.security_group_public_rules[count.index]["port"]
   protocol  = "tcp"
 
-  cidr_blocks = var.security_group_public_rules[count.index]["source"]
+  cidr_blocks = [var.security_group_public_rules[count.index]["source"]]
 
   security_group_id = aws_security_group.load_balancers.id
 }
