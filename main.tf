@@ -7,10 +7,6 @@ resource "aws_lb" "main" {
   internal           = var.internal
   load_balancer_type = "application"
 
-  # Workaround for this issue:
-  # https://github.com/hashicorp/terraform/issues/13869
-  # expected a list, wrap these lists into another lists
-
   security_groups = [aws_security_group.load_balancers.id]
   subnets         = var.subnet_ids
   enable_http2    = false
