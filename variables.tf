@@ -23,7 +23,7 @@ variable "listeners_count" {
 #   },
 # ]
 variable "listeners" {
-  type = list(string)
+  type = list(map(string))
 
   description = <<EOF
   A list of map of plain listener definitions. The map must contain 'port' and 'protocol'.
